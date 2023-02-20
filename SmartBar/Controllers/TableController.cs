@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Persistence;
 using SmartBar.Controllers.DTO;
 
 namespace SmartBar.Controllers
@@ -8,6 +9,8 @@ namespace SmartBar.Controllers
     [Route("[controller]")]
     public class TableController : ControllerBase
     {
+
+        [HttpGet]
         public List<TableDTO> Get()
         {
             var tables = Enumerable.Range(1, 5).Select(index => new TableDTO(index, $"Stalas {index}", index)).ToList();
@@ -15,10 +18,12 @@ namespace SmartBar.Controllers
             return tables;
         }
 
+ 
         /*public TableDTO Post(string tableName)
         {
             return;
         }*/
+
     }
     
 }

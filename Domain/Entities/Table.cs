@@ -19,6 +19,6 @@ namespace Domain.Entities
 
         public string Name { get; set; }
 
-        public ICollection<Order> Orders { get; } = new List<Order>();
+        //public ICollection<Order> Orders { get; } = new List<Order>();
     }
 }
