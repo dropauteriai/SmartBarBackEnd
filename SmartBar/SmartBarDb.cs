@@ -9,6 +9,7 @@ namespace Persistence
         {
         }
         public DbSet<Table> Tables { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
 
     }
 }

@@ -14,16 +14,22 @@ namespace Domain.Entities
     }
     public class Order
     {
-        public Order(Guid id, OrderStatus status)
+        public Order(Guid id, OrderStatus status, DateTime orderDate, string message)
         {
             Id = id;
             Status = status;
+            OrderDate = orderDate;
+            Message = message;
         }
 
         [Key]
         public Guid Id { get; set; }
 
         public OrderStatus Status { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public string Message { get; set; }
 
         public ICollection<OrderItem> Items { get; } = new List<OrderItem>();
     }

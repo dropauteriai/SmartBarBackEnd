@@ -9,8 +9,9 @@ namespace Domain.Entities
 {
     public class OrderItem
     {
-        public OrderItem(string name, float price, int amount, bool delivered)
+        public OrderItem( Guid id, string name, float price, int amount, bool delivered)
         {
+            Id = id;
             Name = name;
             Price = price;
             Amount = amount;
