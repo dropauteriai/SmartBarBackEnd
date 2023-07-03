@@ -36,14 +36,14 @@ namespace SmartBar.Controllers
 
 
         [HttpPost]
-        public async Task<IResult> Post(OrderRequest request)
+        public async Task<IResult> Post(PostOrderRequest request)
         {
             var orderId = Guid.NewGuid();
             var Order = new Order(orderId, OrderStatus.Started, DateTime.Now, request.Notes);
             var items = new List<OrderItem>();
             foreach(var requestItem in request.OrderItems)
             {
-                items.Add(new OrderItem(Guid.NewGuid(), requestItem.Name, requestItem.Price, requestItem.Amount, false));
+                items.Add(new OrderItem(Guid.NewGuid(), orderId, requestItem.Name, 123, requestItem.Amount, false));
             }
 
             await db.Orders.AddAsync((Order)Order);
@@ -55,8 +55,8 @@ namespace SmartBar.Controllers
         [HttpPut]
         public async Task<IResult> Put(Order updateOrder)
         {
-            var Order = await db.Orders.FindAsync(updateOrder.Id);
-            if (Order is null) return Results.NotFound();
+            var order = await db.Orders.FindAsync(updateOrder.Id);
+            if (order is null) return Results.NotFound();
             
             await db.SaveChangesAsync();
             return Results.NoContent();
@@ -65,12 +65,12 @@ namespace SmartBar.Controllers
         [HttpDelete]
         public async Task<IResult> Delete(Guid id)
         {
-            var Order = await db.Orders.FindAsync(id);
-            if (Order is null)
+            var order = await db.Orders.FindAsync(id);
+            if (order is null)
             {
                 return Results.NotFound();
             }
-            db.Orders.Remove(Order);
+            db.Orders.Remove(order);
             await db.SaveChangesAsync();
             return Results.Ok();
         }

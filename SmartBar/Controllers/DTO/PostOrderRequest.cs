@@ -2,15 +2,15 @@
 
 namespace SmartBar.Controllers.DTO
 {
-    public class OrderRequest
+    public class PostOrderRequest
     {
-        public OrderRequest(string notes, List<OrderItem> orderItems)
+        public PostOrderRequest(string notes, List<AddOrderItemRequest> orderItems)
         {
             Notes = notes;
             OrderItems = orderItems;
         }
 
         public string Notes { get; set; }
-        public List<OrderItem> OrderItems { get; set; }
+        public List<AddOrderItemRequest> OrderItems { get; set; }
     }
 }

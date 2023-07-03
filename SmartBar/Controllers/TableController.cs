@@ -45,10 +45,10 @@ namespace SmartBar.Controllers
         [HttpPut]
         public async Task<IResult> Put(Table updatetable)
         {
-            var table = await db.Tables.FindAsync(updatetable.Id);
-            if (table is null) return Results.NotFound();
-            if(table.Name != null) table.Name = updatetable.Name;
-            if (table.SortOrder != 0) table.SortOrder = updatetable.SortOrder;
+            var oldTable = await db.Tables.FindAsync(updatetable.Id);
+            if (oldTable is null) return Results.NotFound();
+            if(oldTable.Name != null) oldTable.Name = updatetable.Name;
+            if (oldTable.SortOrder != 0) oldTable.SortOrder = updatetable.SortOrder;
             await db.SaveChangesAsync();
             return Results.NoContent();
         }
