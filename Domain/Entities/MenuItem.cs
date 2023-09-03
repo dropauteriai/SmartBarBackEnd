@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Menu
+    public class MenuItem
     {
-        public Menu(Guid id, string name, float price, int timesOrdered, int stock)
+        public MenuItem(Guid id, string name, float price, int timesOrdered, int stock)
         {
             Id = id;
             Name = name;
@@ -22,6 +22,7 @@ namespace Domain.Entities
         public float Price { get; set; } 
         public int TimesOrdered { get; set; }
         public int Stock { get; set; }
+        public Guid CategoryId { get; set; }
 
 
     }

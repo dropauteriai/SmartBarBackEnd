@@ -34,7 +34,7 @@ namespace SmartBar
 
             // Add services to the container.
 
-            
+
             //builder.Services.AddCors(options =>
             //{
             //    options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -43,9 +43,17 @@ namespace SmartBar
             //                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();//Origins("https://localhost:44418"); // add the allowed origins  
             //                      });
             //});
-            services.AddCors(opts =>
+            /*services.AddCors(opts =>
             {
                 opts.AddPolicy(nameof(AllowAnyCorsPolicy), new AllowAnyCorsPolicy());
+            });*/
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyPath",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
             });
 
             services.AddControllers();
@@ -76,7 +84,7 @@ namespace SmartBar
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
 

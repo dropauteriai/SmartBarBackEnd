@@ -12,8 +12,8 @@ using Persistence;
 namespace SmartBar.Migrations
 {
     [DbContext(typeof(SmartBarDb))]
-    [Migration("20230703121353_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230713141545_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,10 +24,31 @@ namespace SmartBar.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Domain.Entities.Menu", b =>
+            modelBuilder.Entity("Domain.Entities.MenuCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MenuCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MenuItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("MenuCategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -44,6 +65,8 @@ namespace SmartBar.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MenuCategoryId");
 
                     b.ToTable("Menus");
                 });
@@ -121,6 +144,13 @@ namespace SmartBar.Migrations
                     b.ToTable("Tables");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MenuItem", b =>
+                {
+                    b.HasOne("Domain.Entities.MenuCategory", null)
+                        .WithMany("MenuItems")
+                        .HasForeignKey("MenuCategoryId");
+                });
+
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
                     b.HasOne("Domain.Entities.Table", null)
@@ -135,6 +165,11 @@ namespace SmartBar.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.MenuCategory", b =>
+                {
+                    b.Navigation("MenuItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>

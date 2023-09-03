@@ -17,6 +17,7 @@ namespace Domain.Entities
             Price = price;
             Amount = amount;
             Delivered = delivered;
+           
         }
 
         
@@ -27,7 +28,7 @@ namespace Domain.Entities
         public string Name { get; set; }
         public float Price { get; set; }
         public int Amount { get; set; }
-        public bool Delivered { get; set; }
+        public bool Delivered { get; set; } 
 
     }
 }

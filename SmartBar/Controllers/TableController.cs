@@ -12,7 +12,6 @@ using Table = Domain.Entities.Table;
 namespace SmartBar.Controllers
 {
     [ApiController]
-    [EnableCors(nameof(AllowAnyCorsPolicy))]
     [Route("[controller]")]
     public class TableController : ControllerBase
     {
@@ -47,8 +46,8 @@ namespace SmartBar.Controllers
         {
             var oldTable = await db.Tables.FindAsync(updatetable.Id);
             if (oldTable is null) return Results.NotFound();
-            if(oldTable.Name != null) oldTable.Name = updatetable.Name;
-            if (oldTable.SortOrder != 0) oldTable.SortOrder = updatetable.SortOrder;
+            if(updatetable.Name != null) oldTable.Name = updatetable.Name;
+            if (updatetable.SortOrder != 0) oldTable.SortOrder = updatetable.SortOrder;
             await db.SaveChangesAsync();
             return Results.NoContent();
         }

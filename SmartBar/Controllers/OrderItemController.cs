@@ -8,7 +8,7 @@ using System.ComponentModel.Design;
 
 namespace SmartBar.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class OrderItemController : ControllerBase
     {
@@ -30,13 +30,17 @@ namespace SmartBar.Controllers
         }
 
         [HttpPost]
-        public async Task<IResult> Post(Guid orderId, Guid menuId, int amount)
+        public async Task<IResult> Post(Guid tableId, Guid menuId, int amount)
         {
             var menu = await db.Menus.FindAsync(menuId);
             if(menu == null)
                 return Results.NotFound();
-
-            var orderItem = new OrderItem(Guid.NewGuid(), orderId, menu.Name, menu.Price, amount, false);
+            var activeOrder = await db.Orders.Where(O => O.Status == OrderStatus.Started && tableId == O.Id).FirstOrDefaultAsync();
+            if(activeOrder == null)
+            {
+                return Results.NotFound();
+            }
+            var orderItem = new OrderItem(Guid.NewGuid(), activeOrder.Id, menu.Name, menu.Price, amount, false);
             await db.OrderItems.AddAsync(orderItem);
             await db.SaveChangesAsync();
             return Results.Created($"/OrderItem/{orderItem.Id}", orderItem);
