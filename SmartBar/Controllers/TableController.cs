@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Persistence;
+using Services;
 using SmartBar.Controllers.DTO;
 using System.Runtime.CompilerServices;
 using Table = Domain.Entities.Table;
@@ -15,10 +16,10 @@ namespace SmartBar.Controllers
     [Route("[controller]")]
     public class TableController : ControllerBase
     {
-        private readonly SmartBarDb db;
-        public TableController(SmartBarDb db)
+        private readonly ITableService tableService;
+        public TableController(ITableService tableService)
         {
-            this.db = db;
+            this.tableService = tableService;
         }
 
         [HttpGet]
@@ -28,44 +29,44 @@ namespace SmartBar.Controllers
             //var tables = Enumerable.Range(1, 5).Select(index => new TableDTO(index, $"Stalas {index}", index)).ToList();
             //tables.Add(new TableDTO(100, "Baras", 100));
             //return tables;
-            var list = await db.Tables.OrderBy(x => x.SortOrder).ThenBy(x => x.Name).ToListAsync();
-            return list; 
-        }
+            return await tableService.Get();        }
 
         [HttpPost]
         public async Task<IResult> Post(PostTableRequest request)
         {
             var table = new Table(Guid.NewGuid(), request.Name, request.SortOrder);
-            await db.Tables.AddAsync(table);
-            await db.SaveChangesAsync();
+            await tableService.Post(table);
             return Results.Created($"/table/{table.Id}", table);
         }
 
         [HttpPut]
         public async Task<IResult> Put(Table updatetable)
         {
-            var oldTable = await db.Tables.FindAsync(updatetable.Id);
-            if (oldTable is null) return Results.NotFound();
-            if(updatetable.Name != null) oldTable.Name = updatetable.Name;
-            if (updatetable.SortOrder != 0) oldTable.SortOrder = updatetable.SortOrder;
-            await db.SaveChangesAsync();
-            return Results.NoContent();
+            try
+            {
+                await tableService.Put(updatetable);
+                return Results.NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Results.NotFound();
+            }
+       
         }
 
         [HttpDelete]
         public async Task<IResult> Delete(Guid id)
         {
-            var table = await db.Tables.FindAsync(id);
-            if (table is null)
+            try
+            {
+                await tableService.Delete(id);
+                return Results.Ok();
+            }
+            catch (Exception ex)
             {
                 return Results.NotFound();
             }
-            db.Tables.Remove(table);
-            await db.SaveChangesAsync();
-            return Results.Ok();
         }
-
-        
 
     }
     

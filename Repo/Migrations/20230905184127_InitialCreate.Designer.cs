@@ -12,8 +12,8 @@ using Persistence;
 namespace SmartBar.Migrations
 {
     [DbContext(typeof(SmartBarDb))]
-    [Migration("20230713141545_initialCreate")]
-    partial class initialCreate
+    [Migration("20230905184127_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

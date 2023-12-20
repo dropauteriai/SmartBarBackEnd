@@ -12,7 +12,7 @@ using Order = Domain.Entities.Order;
 namespace SmartBar.Controllers
 {
     [ApiController]
-    [EnableCors(nameof(AllowAnyCorsPolicy))]
+   // [EnableCors(nameof(AllowAnyCorsPolicy))]
     [Route("[controller]")]
     public class OrderController : ControllerBase
     {
@@ -36,20 +36,27 @@ namespace SmartBar.Controllers
 
 
         [HttpPost]
-        public async Task<IResult> Post(PostOrderRequest request)
+        public async Task<IResult> Post(Guid tableId, string notes)
         {
-            var orderId = Guid.NewGuid();
-            var Order = new Order(orderId, OrderStatus.Started, DateTime.Now, request.Notes);
-            var items = new List<OrderItem>();
-            foreach(var requestItem in request.OrderItems)
+            //var orderId = Guid.NewGuid();
+            var isThereOrder = await db.Orders.FindAsync(tableId);
+            if (isThereOrder == null)
             {
-                items.Add(new OrderItem(Guid.NewGuid(), orderId, requestItem.Name, 123, requestItem.Amount, false));
+                var order = new Order(Guid.NewGuid(), tableId, OrderStatus.Started, DateTime.Now, notes);
+                await db.Orders.AddAsync(order);
+                await db.SaveChangesAsync();
+                return Results.Created($"/Order/{order.Id}", order);
             }
 
-            await db.Orders.AddAsync((Order)Order);
-            await db.AddRangeAsync(items);
-            await db.SaveChangesAsync();
-            return Results.Created($"/Order/{Order.Id}", (object)Order);
+            return Results.Accepted();
+            //var items = new List<OrderItem>();
+            /*foreach(var requestItem in request.OrderItems)
+            {
+                items.Add(new OrderItem(Guid.NewGuid(), orderId, requestItem.Name, 123, requestItem.Amount, false));
+            }*/
+
+           // await db.AddRangeAsync(items);
+            
         }
 
         [HttpPut]

@@ -8,13 +8,14 @@ namespace Domain.Entities
 {
     public class MenuItem
     {
-        public MenuItem(Guid id, string name, float price, int timesOrdered, int stock)
+        public MenuItem(Guid id, string name, float price, int timesOrdered, int stock, Guid categoryId)
         {
             Id = id;
             Name = name;
             Price = price;
             TimesOrdered = timesOrdered;
             Stock = stock;
+            CategoryId = categoryId;    
         }
 
         public Guid Id { get; set; }

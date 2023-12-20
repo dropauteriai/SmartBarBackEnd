@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Services;
 using System.Net;
 
 namespace SmartBar
@@ -32,21 +33,7 @@ namespace SmartBar
                 });
             });
 
-            // Add services to the container.
-
-
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //                      policy =>
-            //                      {
-            //                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();//Origins("https://localhost:44418"); // add the allowed origins  
-            //                      });
-            //});
-            /*services.AddCors(opts =>
-            {
-                opts.AddPolicy(nameof(AllowAnyCorsPolicy), new AllowAnyCorsPolicy());
-            });*/
+         
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyPath",
@@ -67,16 +54,17 @@ namespace SmartBar
             services.AddDbContext<SmartBarDb>(options => options.UseSqlServer(connectionString));
             //builder.Services.AddSqlite<SmartBarDb>(connectionString);
             //services.AddSqlite<SmartBarDb>(connectionString);
-           
 
+            services.AddScoped<ITableService, TableService>();
+
+            services.AddSingleton<SmartBarDb>();
 
             services.AddSwaggerGen();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-            // Configure the HTTP request pipeline.
 
+            app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
             
             app.UseHttpsRedirection();
             
@@ -84,7 +72,6 @@ namespace SmartBar
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
 

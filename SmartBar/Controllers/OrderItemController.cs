@@ -35,12 +35,18 @@ namespace SmartBar.Controllers
             var menu = await db.Menus.FindAsync(menuId);
             if(menu == null)
                 return Results.NotFound();
-            var activeOrder = await db.Orders.Where(O => O.Status == OrderStatus.Started && tableId == O.Id).FirstOrDefaultAsync();
+            var activeOrder = await db.Orders.Where(O => O.Status == OrderStatus.Started && tableId == O.TableId).FirstOrDefaultAsync();
             if(activeOrder == null)
             {
+                //var newOrder = new Order(Guid.NewGuid(), OrderStatus.Started, DateTime.Now, "");
+                // var orderItem = new OrderItem(Guid.NewGuid(), newOrder.Id, menu.Name, menu.Price, amount, false);
+                // 6c9f1930-9d05-4628-8d91-7914855e76dd  -- stalo id
+                // c467d497-7bab-48ef-94fd-4ce67cb6b28b  -- menu id
                 return Results.NotFound();
             }
+            
             var orderItem = new OrderItem(Guid.NewGuid(), activeOrder.Id, menu.Name, menu.Price, amount, false);
+            
             await db.OrderItems.AddAsync(orderItem);
             await db.SaveChangesAsync();
             return Results.Created($"/OrderItem/{orderItem.Id}", orderItem);

@@ -16,18 +16,29 @@ namespace SmartBar.Controllers
         {
             this.db = db;
         }
-
-        [HttpGet]
-        public async Task<List<MenuItem>> Get()
+        /*
+       [HttpGet]
+        public async Task<List<MenuItem>> GetAll()
         {
-            var list = await db.Menus.ToListAsync();
+            var list = await db.Menus.ToListAsync();//alaus categoryId: 97e88118-c22c-4aef-9972-036387920cae
             return list;
+        }*/
+        
+        [HttpGet]
+        public async Task<ActionResult<List<MenuItem>>> Get(Guid categoryId)
+        {
+            var list = await db.Menus.Where(menu=>menu.CategoryId == categoryId).ToListAsync();
+            if (list is null)
+            {
+                return NotFound();
+            }
+            else return Ok(list);
         }
 
         [HttpPost]
         public async Task<IResult> Post(PostMenuRequest request)
         {
-            var menu = new MenuItem(Guid.NewGuid(), request.Name, request.Price, 0, request.Stock) ;//pridedant menu elementa, jo bus uzsakyta 0 kartu
+            var menu = new MenuItem(Guid.NewGuid(), request.Name, request.Price, 0, request.Stock, request.CategoryId) ;//pridedant menu elementa, jo bus uzsakyta 0 kartu
             await db.Menus.AddAsync(menu);
             await db.SaveChangesAsync();
             return Results.Created($"/Menu/{menu.Id}", menu);

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -8,7 +9,7 @@ namespace SmartBar.Controllers
 {
     
         [Route("[controller]")]
-        [ApiController]
+    [ApiController]
         public class MenuCategoryController : ControllerBase
         {
             private readonly SmartBarDb db;
@@ -17,7 +18,7 @@ namespace SmartBar.Controllers
                 this.db = db;
             }
 
-            [HttpGet]
+        [HttpGet]
             public async Task<List<MenuCategory>> Get()
             {
                 var list = await db.MenuCategories.ToListAsync();

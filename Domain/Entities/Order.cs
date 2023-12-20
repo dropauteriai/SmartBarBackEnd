@@ -14,9 +14,10 @@ namespace Domain.Entities
     }
     public class Order
     {
-        public Order(Guid id, OrderStatus status, DateTime orderDate, string message)
+        public Order(Guid id, Guid tableId, OrderStatus status, DateTime orderDate, string message)
         {
             Id = id;
+            TableId = tableId;
             Status = status;
             OrderDate = orderDate;
             Message = message;
@@ -24,6 +25,8 @@ namespace Domain.Entities
 
         [Key]
         public Guid Id { get; set; }
+
+        public Guid TableId { get; set; }
 
         public OrderStatus Status { get; set; }
 

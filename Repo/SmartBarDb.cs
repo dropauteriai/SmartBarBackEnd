@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using SmartBar.Controllers;
 
 namespace Persistence
 {
